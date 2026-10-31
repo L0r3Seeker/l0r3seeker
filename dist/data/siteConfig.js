@@ -17,6 +17,11 @@ export const siteConfig = {
     roles: ['Independent Creator', 'Digital Product Development', 'Technology & Exploration', 'Based in Asia'],
   },
   capabilities: ['Web Development', 'Software Development', 'UI/UX Design', 'AI-assisted Development', 'Infrastructure'],
-  contact: ['GitHub', 'Bilibili', 'X', 'Email'],
+  contact: [
+    {label:'YouTube',href:'https://www.youtube.com/',note:'YouTube 官网（个人主页暂未建立）'},
+    {label:'X',href:'https://x.com/L0r3Seeker',note:'L0r3Seeker on X'},
+    {label:'GitHub',href:'https://github.com/L0r3Seeker',note:'L0r3Seeker on GitHub'},
+    {label:'Email',href:'mailto:L0r3Seekerx@gmail.com',note:'Email L0r3Seeker'},
+  ],
   sections: ['horizon', 'about', 'projects', 'exploration', 'capabilities', 'contact'],
 };

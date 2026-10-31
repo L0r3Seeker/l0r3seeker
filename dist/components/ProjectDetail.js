@@ -1,26 +1,14 @@
-import { projects } from '../data/projects.js';
-import { projectArtwork } from './Projects.js';
-import { placeholder } from './shared.js';
-// Hash routes are refresh-safe on static hosting. Replace this view with a full
-// project page without changing the stable #/projects/:id URLs.
-export function mountProjectRoutes() {
-  const dialog = document.createElement('dialog'); dialog.className='project-dialog'; dialog.setAttribute('aria-labelledby','project-detail-title'); document.body.append(dialog);
-  let restoreFocus = null;
-  let restoreHash = '#projects';
-  function clear() { dialog.close(); document.body.classList.remove('dialog-open'); if(restoreFocus?.isConnected) restoreFocus.focus({preventScroll:true}); }
-  function leave() { history.replaceState(null,'',restoreHash); clear(); }
-  function route() {
-    const match = location.hash.match(/^#\/projects\/([^/]+)$/);
-    if(!match) { if(dialog.open) clear(); return; }
-    const project = projects.find(p=>p.id===match[1]);
-    restoreFocus = document.activeElement;
-    dialog.innerHTML = `<div class="dialog-header"><span>PROJECT PREVIEW / PHASE 01</span><button class="dialog-close" aria-label="Close project preview">CLOSE <span aria-hidden="true">×</span></button></div>`+(project ? `<div class="dialog-content">${projectArtwork(project)}<h2 id="project-detail-title">${project.title}</h2><span class="eyebrow">${project.category}</span><p>${project.description}</p><p>${project.note} 此区域预留给未来的项目故事、图片、技术说明与访问链接。</p>${placeholder('PLACEHOLDER · NOT A REAL PROJECT')}<div><button class="dialog-return">← BACK TO SELECTED WORK</button></div></div>` : `<div class="route-error"><h2 id="project-detail-title">Beyond this horizon.</h2><p>This project has not been added yet.</p><button class="dialog-return">← BACK TO SELECTED WORK</button></div>`);
-    dialog.querySelectorAll('button').forEach(button=>button.addEventListener('click',leave));
-    document.body.classList.add('dialog-open'); if(!dialog.open) dialog.showModal();
+import {projects} from '../data/projects.js';
+export function mountProjectRoutes(){
+  const dialog=document.createElement('dialog');dialog.className='project-dialog variable-dialog';dialog.setAttribute('aria-labelledby','project-detail-title');document.body.append(dialog);
+  let restoreFocus=null,project=null,index=0;
+  function updateImage(){const im=project.images[index],view=dialog.querySelector('.lightbox-image');view.src=im.src;view.alt=im.alt;dialog.querySelector('.lightbox-caption').textContent=`${String(index+1).padStart(2,'0')} / ${String(project.images.length).padStart(2,'0')} — ${im.caption}`;}
+  function clear(){dialog.close();document.body.classList.remove('dialog-open');if(restoreFocus?.isConnected)restoreFocus.focus({preventScroll:true});}
+  function leave(){history.replaceState(null,'','#projects');clear();}
+  function route(){const match=location.hash.match(/^#\/projects\/([^/]+)(?:\/image\/(\d+))?$/);if(!match){if(dialog.open)clear();return;}project=projects.find(p=>p.id===match[1]);restoreFocus=document.activeElement;
+    dialog.innerHTML=`<div class="dialog-header"><span>PROJECT / ${project?.englishTitle||'UNKNOWN'}</span><button class="dialog-close" aria-label="关闭项目详情">CLOSE <span aria-hidden="true">×</span></button></div>`+(project?`<div class="lightbox"><img class="lightbox-image" alt=""><button class="lightbox-prev" aria-label="上一张截图">←</button><button class="lightbox-next" aria-label="下一张截图">→</button><span class="lightbox-caption" aria-live="polite"></span></div><div class="dialog-project-notes"><div><h2 id="project-detail-title">《${project.title}》 / ${project.englishTitle}</h2><p class="eyebrow">${project.engine} · ${project.status} · ${project.dateLabel}</p></div><p>${project.description}</p></div>`:`<div class="route-error"><h2 id="project-detail-title">项目尚未添加</h2><p>更多作品将在后续补充。</p></div>`);
+    dialog.querySelector('.dialog-close').addEventListener('click',leave);if(project){index=Math.min(Math.max(Number(match[2]||1)-1,0),project.images.length-1);updateImage();dialog.querySelector('.lightbox-prev').addEventListener('click',()=>{index=(index+project.images.length-1)%project.images.length;updateImage();});dialog.querySelector('.lightbox-next').addEventListener('click',()=>{index=(index+1)%project.images.length;updateImage();});}document.body.classList.add('dialog-open');if(!dialog.open)dialog.showModal();
   }
-  const onClick = e => { const link=e.target.closest('.project-link'); if(link) restoreHash = '#projects'; };
-  const onCancel = e => { e.preventDefault(); leave(); };
-  const onBackdrop = e => {if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)leave();}};
-  window.addEventListener('hashchange',route); document.addEventListener('click',onClick); dialog.addEventListener('cancel',onCancel);dialog.addEventListener('click',onBackdrop); route();
-  return () => {window.removeEventListener('hashchange',route);document.removeEventListener('click',onClick);dialog.removeEventListener('cancel',onCancel);dialog.removeEventListener('click',onBackdrop);clear();dialog.remove();};
+  const cancel=e=>{e.preventDefault();leave();},key=e=>{if(project&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){e.preventDefault();index=(index+(e.key==='ArrowRight'?1:-1)+project.images.length)%project.images.length;updateImage();}};
+  dialog.addEventListener('cancel',cancel);dialog.addEventListener('keydown',key);window.addEventListener('hashchange',route);route();return()=>{window.removeEventListener('hashchange',route);dialog.removeEventListener('cancel',cancel);dialog.removeEventListener('keydown',key);clear();dialog.remove();};
 }

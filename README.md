@@ -1,39 +1,40 @@
 # Beyond the Horizon
 
-L0r3Seeker 的 Personal Digital Universe，第一阶段。
+L0r3Seeker 的个人数字宇宙。当前版本包含六个区域、A/B 全局地球背景与《变量（Variable）》项目旅程。
 
-## 本地运行
+## 运行
 
-需要 Node.js 20+。不需要安装依赖或构建。
+Node.js 20+，无需安装依赖或构建。
 
 ```sh
 npm run dev
 npm run check
 ```
 
-打开 http://127.0.0.1:4173 。发布目录为 `dist/`。
+预览：http://127.0.0.1:4173 。发布目录 `dist/`，Site 标识保留在 `.openai/hosting.json`。
 
-## 维护入口
+## 内容与结构
 
-- `dist/data/siteConfig.js`：站点文案、导航、身份占位、能力分类、联系入口。
-- `dist/data/projects.js`：3 个明确标注的项目占位与探索条目。保持 `id` 稳定。
-- `dist/components/`：六个区域、导航、页脚、项目详情分别独立。
-- `dist/animations/`：首屏滚动过渡、进入动画、微交互，均提供清理函数。
-- `dist/styles/globals.css`：颜色、字体、间距、断点与减少动态效果规范。
-- `dist/assets/images/earth-horizon.webp`：桌面摄影；`earth-horizon-mobile.webp`：移动端版本。图片加载失败时保留渐变备用。
-- `dist/components/ProjectDetail.js`：刷新安全的 `#/projects/:id` 路由入口，后续可替换为真实详情。
+- `dist/data/projects.js`：《变量》的原文旁白、2026.07.21 至今的开发时间、四张用户提供的原型截图。增加项目即可扩展单项目旅程；没有虚构开发里程碑。
+- `dist/components/Projects.js`：每个视口聚焦一个项目，截图为主、旁白为辅；下方是带分支与时间戳的横向曲线。
+- `dist/animations/projectJourney.js`：原生滚动进度推动曲线与画面，支持截图按钮、触屏与减少动态效果，不接管滚轮。
+- `dist/components/ProjectDetail.js`：`#/projects/variable` 与 `#/projects/variable/image/1` 等刷新安全路由；大图查看支持前后切换、方向键、Esc 与焦点恢复。
+- `dist/components/GlobalUniverse.js`：A 真实纹理地球、B COBE 点阵地球；按需加载并保存选择。动画暂停、页面隐藏暂停、像素密度限制与静态背景备用。
+- `dist/animations/motionMath.js`：纯函数管理平滑与幅度边界；页尾使用独立的固定构图地平线，位移限制在 0 到 -8px，不放大完整球体。
+- `dist/data/siteConfig.js`：站点资料与社交链接。YouTube 暂时跳转官网，X / GitHub / Email 使用用户提供的地址。介绍、能力等未提供的个人资料仍明确标为占位。
+- `dist/styles/globals.css`：基础设计系统；`universe-journey.css`：全局背景与本轮项目旅程样式。
 
-采用浏览器原生 ES modules，避免为第一阶段引入依赖。IntersectionObserver 触发进入效果；首屏通过 passive scroll + requestAnimationFrame 更新 transform/opacity，尺寸仅在布局变化时读取。手机降低变换幅度；`prefers-reduced-motion` 移除持续背景动画与滚动镜头。
+手机保持画面完整。窄屏旁白限制显示行数，短屏优先展示图片与曲线，完整原文可从“完整旁白与画面”打开。
 
-## 内容边界
+## 检查
 
-身份、地域、项目、探索条目与能力分类均为占位，未声称真实经历、成果或熟练度。GitHub、Bilibili、X、Email 是不可点击的展示占位，收到真实地址后再改为链接。项目详情仅说明占位状态。
+`npm run check` 检查脚本语法、相对导入、资源、项目数据与 hosting manifest，并模拟突然跳转、确认地平线范围、无过冲和画廊边界。浏览器检查不等同于真实移动设备性能测试。
 
-## 资源
+## 资源与许可
 
-地球摄影：NASA / ISS064-E-005209，2020-11-20。
-来源：https://www.nasa.gov/image-article/earths-limb-or-horizon/
-原图：https://images-assets.nasa.gov/image/iss064e005209/iss064e005209~orig.jpg
-仅缩放并编码为 WebP。
-
-字体：Manrope，SIL Open Font License 1.1，随项目附带许可证。装饰性项目封面为本站 CSS/SVG 原创占位。
+- 项目截图：用户提供的四张《变量》Godot 原型截图，仅编码为 WebP，保留原始构图。
+- 地平线摄影：NASA / ISS064-E-005209。https://www.nasa.gov/image-article/earths-limb-or-horizon/
+- A：Three.js 0.187.0（MIT）。原 npm 包使用官方完整性校验值校验；生成的预压缩 ES module 保存为 `dist/assets/vendor/three/three.bundle.js`，LICENSE 随附。https://github.com/mrdoob/three.js
+- 地球参考纹理：Three.js 官方 `examples/textures/planets/earth_atmos_2048.jpg`；夜景纹理来自 three-globe 官方 `example/img/earth-night.jpg`。光照是艺术化渲染，不是实时天文模拟。
+- B：COBE 2.0.1（MIT），模块与 LICENSE 随附。https://github.com/shuding/cobe
+- Manrope：SIL Open Font License 1.1，附于 `dist/assets/fonts/OFL.txt`。
