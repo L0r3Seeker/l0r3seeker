@@ -17,3 +17,6 @@
 @media(max-width:600px) and (max-height:800px){.journey-map{height:72px}.journey-curve-plane{height:70px}.journey-heading{margin-bottom:14px}.journey-stage>.section-label{margin-bottom:10px}}
 .contact-earth{top:42%;bottom:0;height:auto;left:-12%;right:-12%;width:auto;mask-image:linear-gradient(transparent,#000 25%,#000 70%,transparent 100%)}
 @media(max-width:600px){.contact-earth{top:44%;bottom:0;height:auto;left:-35%;right:-35%;width:auto}}
+.project-journey{scroll-margin-top:-25px}
+@media(max-width:800px){.project-journey{scroll-margin-top:-30px}}
+@media(max-width:600px){.project-journey{scroll-margin-top:-20px}}
