@@ -1,38 +1,145 @@
-import {clamp,damp,globePose} from '../animations/motionMath.js';
-export function GlobalUniverse(){return `<div class="global-universe" aria-hidden="true"><div class="universe-fallback"></div><canvas class="earth-canvas"></canvas><canvas class="dot-canvas" hidden></canvas><div class="universe-vignette"></div><div class="global-cursor-light"></div></div><div class="universe-controls" role="group" aria-label="地球背景设置"><span>背景</span><button data-earth-mode="earth" aria-label="背景 A：真实地球" aria-pressed="true">A</button><button data-earth-mode="dots" aria-label="背景 B：点阵地球" aria-pressed="false">B</button><i></i><button class="universe-pause" aria-label="暂停背景动态" aria-pressed="false">Ⅱ</button></div>`;}
-const vertex=`varying vec2 vUv;varying vec3 vNormal;varying vec3 vWorld;void main(){vUv=uv;vNormal=normalize(mat3(modelMatrix)*normal);vec4 p=modelMatrix*vec4(position,1.);vWorld=p.xyz;gl_Position=projectionMatrix*viewMatrix*p;}`;
-const fragment=`uniform sampler2D dayMap;uniform sampler2D nightMap;varying vec2 vUv;varying vec3 vNormal;varying vec3 vWorld;void main(){vec3 n=normalize(vNormal),v=normalize(cameraPosition-vWorld);float sun=dot(n,normalize(vec3(-.6,.4,1.))),lit=smoothstep(-.15,.2,sun);vec3 day=texture2D(dayMap,vUv).rgb,night=texture2D(nightMap,vUv).rgb;vec3 color=day*(.035+max(sun,0.)*.95)*lit+night*(1.-lit)*.65;color+=vec3(.09,.27,.5)*pow(1.-max(dot(n,v),0.),4.)*(.15+lit*.5);gl_FragColor=vec4(color,1.);#include <colorspace_fragment>}`.replace('#include','\n#include');
-const rim=`varying vec3 vNormal;varying vec3 vWorld;void main(){vec3 v=normalize(cameraPosition-vWorld);float edge=pow(1.-abs(dot(normalize(vNormal),v)),5.);gl_FragColor=vec4(.16,.42,.82,edge*.3);}`;
-export function mountGlobalUniverse(){
-  const root=document.querySelector('.global-universe'),canvas=root.querySelector('.earth-canvas'),dots=root.querySelector('.dot-canvas'),cursor=root.querySelector('.global-cursor-light'),horizon=document.querySelector('.contact-earth'),pause=document.querySelector('.universe-pause');
-  const buttons=[...document.querySelectorAll('[data-earth-mode]')],reduced=matchMedia('(prefers-reduced-motion: reduce)'),fine=matchMedia('(hover: hover) and (pointer: fine)');
-  let mode='earth';try{mode=localStorage.getItem('bth-earth-mode')==='dots'?'dots':'earth';}catch{}
-  let disposed=false,renderer,scene,camera,earth,atmosphere,dotGlobe,createGlobe,textures=[],geometry,THREE;
-  let width=innerWidth,height=innerHeight,start=1,contactStart=1,scroll=scrollY,frame=0,last=0,lastRender=0,angle=1.9,paused=reduced.matches,targetX=0,targetY=0,mx=0,my=0;
-  let current=globePose(0,0,width<700),target={...current};
-  function request(){if(!frame&&!disposed)frame=requestAnimationFrame(draw);}
-  function measure(){width=innerWidth;height=innerHeight;start=document.querySelector('#about').offsetTop-height*.3;contactStart=document.querySelector('#contact').offsetTop-height*.65;
-    if(renderer){renderer.setPixelRatio(Math.min(devicePixelRatio,width<700?1.25:1.5));renderer.setSize(width,height,false);camera.aspect=width/height;camera.fov=width<700?44:36;camera.updateProjectionMatrix();}
-    if(dotGlobe)resizeDots();onScroll();}
-  function resizeDots(){const size=width<700?width*1.2:Math.min(height*.8,width*.57),dpr=Math.min(devicePixelRatio,1.5);dots.style.width=size+'px';dots.style.height=size+'px';dots.style.left=(width<700?(width-size)/2:width*.73-size/2)+'px';dots.style.top=(height*(width<700?.78:.53)-size/2)+'px';dotGlobe.update({width:size*dpr,height:size*dpr,devicePixelRatio:dpr});}
-  async function ensureDots(){if(dotGlobe||disposed)return;try{if(!createGlobe)createGlobe=(await import('../assets/vendor/cobe/dist/index.esm.js')).default;if(disposed||dotGlobe)return;const size=600;dotGlobe=createGlobe(dots,{width:size,height:size,devicePixelRatio:1,phi:angle,theta:.15,dark:1,diffuse:1.8,scale:1,mapSamples:16000,mapBrightness:3,mapBaseBrightness:.025,baseColor:[.28,.43,.63],markerColor:[.5,.7,1],glowColor:[.08,.17,.3],markers:[],arcs:[],opacity:1});resizeDots();request();}catch{mode='earth';sync();}}
-  function sync(){buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.earthMode===mode)));canvas.hidden=mode==='dots';dots.hidden=mode!=='dots';pause.setAttribute('aria-pressed',String(paused));pause.setAttribute('aria-label',paused?'恢复背景动态':'暂停背景动态');pause.textContent=paused?'▷':'Ⅱ';if(mode==='dots')ensureDots();request();}
-  function onScroll(){scroll=scrollY;target=globePose(clamp(scroll/Math.max(start,1)),clamp((scroll-contactStart)/(height*.9)),width<700);request();}
-  async function setup(){try{THREE=await import('../assets/vendor/three/three.bundle.js');if(disposed)return;renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});renderer.setClearColor(0x050a12,0);renderer.outputColorSpace=THREE.SRGBColorSpace;scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(36,width/height,.1,50);camera.position.z=7;
-      const loader=new THREE.TextureLoader(),maps=await Promise.all([loader.loadAsync('/assets/textures/earth-atmos.jpg'),loader.loadAsync('/assets/textures/earth-night.jpg')]);textures=maps;if(disposed){maps.forEach(t=>t.dispose());renderer.dispose();return;}maps.forEach(t=>t.colorSpace=THREE.SRGBColorSpace);geometry=new THREE.SphereGeometry(1,64,48);earth=new THREE.Mesh(geometry,new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:fragment,uniforms:{dayMap:{value:maps[0]},nightMap:{value:maps[1]}}}));earth.rotation.z=.13;atmosphere=new THREE.Mesh(geometry,new THREE.ShaderMaterial({vertexShader:vertex,fragmentShader:rim,transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending}));scene.add(earth,atmosphere);root.classList.add('webgl-ready');measure();sync();
-    }catch{root.classList.add('webgl-fallback');}}
-  function draw(now){frame=0;if(disposed||document.hidden)return;const dt=last?Math.min((now-last)/1000,.05):1/60;last=now;
-    let unsettled=false;for(const key of Object.keys(current)){const value=reduced.matches?target[key]:damp(current[key],target[key],dt,.75);current[key]=Math.abs(value-target[key])<.0001?target[key]:value;if(current[key]!==target[key])unsettled=true;}
-    mx=damp(mx,targetX,dt,.45);my=damp(my,targetY,dt,.45);if(!paused&&!reduced.matches)angle+=dt*.025;
-    const movement=paused||reduced.matches?0:1;
-    horizon.style.opacity=String(current.horizonOpacity);horizon.style.transform=`translate3d(0,${current.horizonOffset}px,0)`;
-    if(mode==='dots'){dots.style.opacity=String(current.opacity);dots.style.transform=`translate3d(${mx*movement*4}px,${my*movement*3}px,0)`;if(dotGlobe&&now-lastRender>=32){dotGlobe.update({phi:angle+mx*movement*.035,theta:.15+my*movement*.02});lastRender=now;}}
-    else if(renderer&&earth){canvas.style.opacity=String(current.opacity);earth.position.set(current.x,current.y,0);earth.scale.setScalar(current.scale);earth.rotation.y=angle;earth.rotation.x=.03+my*movement*.012;atmosphere.position.copy(earth.position);atmosphere.scale.setScalar(current.scale*1.015);camera.position.x=mx*movement*.035;camera.position.y=my*movement*.025;camera.lookAt(0,0,0);if(now-lastRender>=32||paused||reduced.matches){renderer.render(scene,camera);lastRender=now;}}
-    if((!paused&&!reduced.matches)||unsettled)request();
+import { clamp, damp, universeState } from '../animations/motionMath.js';
+
+export function GlobalUniverse() {
+  return `<div class="global-universe" aria-hidden="true">
+    <div class="horizon-photo"><picture><source media="(max-width:700px)" srcset="/assets/images/horizon-sunrise-mobile.webp"><img src="/assets/images/horizon-sunrise.webp" width="2000" height="1000" fetchpriority="high" alt=""></picture><div class="photo-shade"></div></div>
+    <div class="digital-stars"></div><canvas class="dot-canvas"></canvas>
+    <div class="universe-vignette"></div><div class="global-cursor-light"></div>
+  </div><button class="universe-pause" aria-label="Pause motion" aria-pressed="false" title="Pause motion"><span aria-hidden="true">Ⅱ</span></button>`;
+}
+
+export function mountGlobalUniverse() {
+  const root = document.querySelector('.global-universe');
+  const photo = root.querySelector('.horizon-photo');
+  const dots = root.querySelector('.dot-canvas');
+  const stars = root.querySelector('.digital-stars');
+  const cursor = root.querySelector('.global-cursor-light');
+  const horizon = document.querySelector('.contact-earth');
+  const pause = document.querySelector('.universe-pause');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  let width = innerWidth, height = innerHeight, contactTop = Infinity;
+  let target = universeState(0, height, Infinity), current = { ...target };
+  let globe, loading, disposed = false, paused = reduced.matches;
+  let frame = 0, last = 0, lastRender = 0, angle = 1.9;
+  let mx = 0, my = 0, targetX = 0, targetY = 0;
+
+  function request() { if (!frame && !disposed) frame = requestAnimationFrame(draw); }
+
+  function resizeGlobe() {
+    const size = width < 700 ? width * 1.2 : Math.min(height * .82, width * .58);
+    const ratio = Math.min(devicePixelRatio, width < 700 ? 1.25 : 1.5);
+    dots.style.width = `${size}px`;
+    dots.style.height = `${size}px`;
+    dots.style.left = `${width < 700 ? (width - size) / 2 : width * .73 - size / 2}px`;
+    dots.style.top = `${height * (width < 700 ? .77 : .53) - size / 2}px`;
+    globe?.update({ width: size * ratio, height: size * ratio, devicePixelRatio: ratio });
   }
-  const cleanups=[];buttons.forEach(b=>{const fn=()=>{mode=b.dataset.earthMode;try{localStorage.setItem('bth-earth-mode',mode);}catch{}sync();};b.addEventListener('click',fn);cleanups.push(()=>b.removeEventListener('click',fn));});
-  const toggle=()=>{paused=!paused;sync();},pointer=e=>{if(!fine.matches||reduced.matches)return;targetX=e.clientX/width*2-1;targetY=e.clientY/height*2-1;cursor.style.transform=`translate(${e.clientX-350}px,${e.clientY-350}px)`;request();},visibility=()=>{last=0;if(document.hidden){cancelAnimationFrame(frame);frame=0;}else request();},preference=()=>{paused=reduced.matches;sync();};
-  pause.addEventListener('click',toggle);window.addEventListener('pointermove',pointer,{passive:true});window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',measure);document.addEventListener('visibilitychange',visibility);reduced.addEventListener('change',preference);
-  const resize=new ResizeObserver(measure);resize.observe(document.body);measure();sync();requestAnimationFrame(setup);
-  return()=>{disposed=true;cancelAnimationFrame(frame);resize.disconnect();cleanups.forEach(fn=>fn());pause.removeEventListener('click',toggle);window.removeEventListener('pointermove',pointer);window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',measure);document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',preference);dotGlobe?.destroy();textures.forEach(t=>t.dispose());geometry?.dispose();earth?.material.dispose();atmosphere?.material.dispose();renderer?.dispose();};
+
+  function updateTarget() {
+    target = universeState(scrollY, height, contactTop);
+    if (reduced.matches) {
+      const early = scrollY < height * .7;
+      target.photoOpacity = early ? 1 : 0;
+      target.digitalOpacity = early ? 0 : Math.max(target.digitalOpacity, .15);
+      target.photoOffset = target.horizonOffset = 0;
+      target.photoScale = target.digitalScale = 1;
+    }
+    request();
+  }
+
+  function measure() {
+    width = document.documentElement.clientWidth || innerWidth;
+    height = innerHeight;
+    contactTop = document.querySelector('#contact').offsetTop;
+    resizeGlobe();
+    updateTarget();
+  }
+
+  async function setup() {
+    if (loading || globe || disposed) return;
+    loading = true;
+    try {
+      const { default: createGlobe } = await import('../assets/vendor/cobe/dist/index.esm.js');
+      if (disposed) return;
+      globe = createGlobe(dots, {
+        width: 600, height: 600, devicePixelRatio: 1, phi: angle, theta: .15,
+        dark: 1, diffuse: 1.8, scale: 1, mapSamples: 16000,
+        mapBrightness: 3, mapBaseBrightness: .025,
+        baseColor: [.28, .43, .63], markerColor: [.5, .7, 1],
+        glowColor: [.08, .17, .3], markers: [], arcs: [], opacity: 1,
+      });
+      root.classList.add('digital-ready');
+      resizeGlobe();
+      request();
+    } catch {
+      root.classList.add('digital-unavailable');
+    }
+  }
+
+  function draw(now) {
+    frame = 0;
+    if (disposed || document.hidden) return;
+    const dt = last ? Math.min((now - last) / 1000, .05) : 1 / 60;
+    last = now;
+    let unsettled = false;
+    for (const key of Object.keys(current)) {
+      const value = reduced.matches ? target[key] : damp(current[key], target[key], dt);
+      current[key] = Math.abs(value - target[key]) < .0001 ? target[key] : value;
+      if (current[key] !== target[key]) unsettled = true;
+    }
+    mx = damp(mx, targetX, dt, .45); my = damp(my, targetY, dt, .45);
+    const moving = !paused && !reduced.matches;
+    if (moving) angle += dt * .025;
+    const photoAlpha = root.classList.contains('digital-unavailable') ? Math.max(current.photoOpacity, .12) : current.photoOpacity;
+    photo.style.opacity = String(photoAlpha);
+    photo.style.transform = `translate3d(0,${current.photoOffset}px,0) scale(${current.photoScale})`;
+    dots.style.opacity = String(current.digitalOpacity);
+    dots.style.transform = `translate3d(${moving ? mx * 4 : 0}px,${moving ? my * 3 : 0}px,0) scale(${current.digitalScale})`;
+    stars.style.opacity = String(current.digitalOpacity * .8);
+    horizon.style.opacity = String(current.horizonOpacity);
+    horizon.style.transform = `translate3d(0,${current.horizonOffset}px,0)`;
+    if (globe && (now - lastRender >= 32 || paused || reduced.matches)) {
+      globe.update({ phi: angle + (moving ? mx * .035 : 0), theta: .15 + (moving ? my * .02 : 0) });
+      lastRender = now;
+    }
+    if (moving || unsettled) request();
+  }
+
+  function syncPause() {
+    pause.setAttribute('aria-pressed', String(paused));
+    pause.setAttribute('aria-label', paused ? 'Resume motion' : 'Pause motion');
+    pause.title = paused ? 'Resume motion' : 'Pause motion';
+    pause.innerHTML = `<span aria-hidden="true">${paused ? '▷' : 'Ⅱ'}</span>`;
+    request();
+  }
+  const toggle = () => { paused = !paused; syncPause(); };
+  const pointer = event => {
+    if (!fine.matches || reduced.matches || paused) return;
+    targetX = clamp(event.clientX / width * 2 - 1, -1, 1);
+    targetY = clamp(event.clientY / height * 2 - 1, -1, 1);
+    cursor.style.transform = `translate(${event.clientX - 350}px,${event.clientY - 350}px)`;
+    request();
+  };
+  const visibility = () => {
+    last = 0;
+    if (document.hidden) { cancelAnimationFrame(frame); frame = 0; }
+    else request();
+  };
+  const preference = () => { paused = reduced.matches; syncPause(); updateTarget(); };
+  pause.addEventListener('click', toggle);
+  window.addEventListener('pointermove', pointer, { passive: true });
+  window.addEventListener('scroll', updateTarget, { passive: true });
+  window.addEventListener('resize', measure);
+  document.addEventListener('visibilitychange', visibility);
+  reduced.addEventListener('change', preference);
+  const resize = new ResizeObserver(measure); resize.observe(document.body);
+  measure(); syncPause(); requestAnimationFrame(setup);
+  return () => {
+    disposed = true; cancelAnimationFrame(frame); resize.disconnect(); globe?.destroy();
+    pause.removeEventListener('click', toggle);
+    window.removeEventListener('pointermove', pointer); window.removeEventListener('scroll', updateTarget);
+    window.removeEventListener('resize', measure); document.removeEventListener('visibilitychange', visibility);
+    reduced.removeEventListener('change', preference);
+  };
 }

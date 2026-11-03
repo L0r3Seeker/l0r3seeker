@@ -1,4 +1,4 @@
-// All personal details below are editable placeholders, not verified biography.
+// Public site content and user-provided contact destinations.
 export const siteConfig = {
   name: 'L0R3SEEKER',
   displayName: 'L0r3Seeker',
@@ -13,12 +13,12 @@ export const siteConfig = {
   ],
   introduction: {
     headline: 'A space for ideas.\nA world in the making.',
-    note: '个人介绍待补充。这里将呈现我的故事、关注的方向，以及正在探索的事物。',
-    roles: ['Independent Creator', 'Digital Product Development', 'Technology & Exploration', 'Based in Asia'],
+    note: '这里是 L0r3Seeker 的数字空间，记录作品、实验与持续探索。目前正在开发《变量（Variable）》——一款基于 Godot 4 的第一人称科幻物理解谜游戏，围绕重力与物理规则展开。',
+    roles: ['Godot 4', 'Physics-driven puzzles', 'Prototype development'],
   },
-  capabilities: ['Web Development', 'Software Development', 'UI/UX Design', 'AI-assisted Development', 'Infrastructure'],
+  capabilities: ['Godot 4', 'Physics & Gravity', 'First-person Interaction', 'Industrial Worldbuilding', 'Prototyping & Iteration'],
   contact: [
-    {label:'YouTube',href:'https://www.youtube.com/',note:'YouTube 官网（个人主页暂未建立）'},
+    {label:'YouTube',href:'https://www.youtube.com/',note:'YouTube'},
     {label:'X',href:'https://x.com/L0r3Seeker',note:'L0r3Seeker on X'},
     {label:'GitHub',href:'https://github.com/L0r3Seeker',note:'L0r3Seeker on GitHub'},
     {label:'Email',href:'mailto:L0r3Seekerx@gmail.com',note:'Email L0r3Seeker'},

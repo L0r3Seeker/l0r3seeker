@@ -1,5 +1,47 @@
-import {projects} from '../data/projects.js';
-import {sectionLabel,arrow} from './shared.js';
-export function projectArtwork(p){const im=p.images[0];return `<img class="detail-cover" src="${im.src}" width="${im.width}" height="${im.height}" alt="${im.alt}">`;}
-function curve(){return `<div class="journey-map" aria-label="开发时间线：2026年7月21日至今"><div class="journey-curve-plane"><svg viewBox="0 0 1400 160" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="journey-light"><stop stop-color="#78b7ff" stop-opacity=".1"/><stop offset=".5" stop-color="#b5d5fa" stop-opacity=".8"/><stop offset="1" stop-color="#78b7ff" stop-opacity=".1"/></linearGradient></defs>${['curve-shadow','curve-main','curve-running'].map(c=>`<path class="${c}" d="M-240 95 C20 -30 190 200 450 88 S810 -15 1080 85 S1430 190 1650 55"/>`).join('')}<path class="curve-branch" d="M450 88 Q482 62 505 18 H640"/><path class="curve-branch" d="M1080 85 Q1110 126 1144 143 H1270"/><circle cx="450" cy="88" r="4" class="curve-node"/><circle cx="1080" cy="85" r="3" class="curve-node"/><circle class="curve-traveler" r="4"/><text x="510" y="9" class="curve-date">2026.07.21</text><text x="650" y="21" class="curve-caption">变量 / VARIABLE</text><text x="1150" y="135" class="curve-date">至今</text><text x="1280" y="148" class="curve-caption">原型开发中</text></svg></div><span class="journey-map-note">SCROLL TO TRAVEL ↔</span><span class="mobile-journey-dates">2026.07.21 <span>—</span> 至今 · 原型开发</span></div>`;}
-export function Projects(){return `<section id="projects" class="project-journey" aria-labelledby="projects-title"><div class="journey-stage container">${sectionLabel('03','SELECTED WORK / PROJECT JOURNEY')}<div class="journey-heading"><h2 id="projects-title">Selected <span class="soft-text">work.</span></h2><span class="project-count">01 / ${String(projects.length).padStart(2,'0')} PROJECT</span></div><div class="journey-projects">${projects.map((p,n)=>`<article class="journey-project${n===0?' is-current':''}" data-project="${n}" ${n?'inert':''}><div class="project-visual"><div class="project-gallery" aria-label="《${p.title}》游戏截图">${p.images.map((im,i)=>`<img class="gallery-frame" src="${im.src}" width="${im.width}" height="${im.height}" alt="${im.alt}" loading="lazy" data-frame="${i}" style="opacity:${i===0?1:0}" ${i?'aria-hidden="true"':''}>`).join('')}<button class="expand-gallery" aria-label="放大当前游戏截图">${arrow}<span>EXPAND</span></button><div class="gallery-caption"><span class="gallery-caption-title">${p.images[0].caption}</span><span class="gallery-scene">PROTOTYPE / <b>01</b> — 04</span></div></div><div class="gallery-controls" aria-label="游戏画面切换">${p.images.map((im,i)=>`<button data-gallery-index="${i}" aria-label="查看第${i+1}张：${im.caption}" aria-pressed="${i===0}"><span>0${i+1}</span><i></i></button>`).join('')}<span class="gallery-scroll-hint">滚动继续浏览 ↓</span></div></div><aside class="project-narration"><span class="project-category">${p.category}</span><h3>《${p.title}》<span>${p.englishTitle}</span></h3><div class="project-facts"><span>${p.engine}</span><span class="project-status"><i></i>${p.status}</span></div><time datetime="${p.startDate}">${p.dateLabel}</time><div class="narration-rule"><span>PROJECT NOTES</span><i></i></div><p>${p.description}</p><a class="project-story-link project-link" href="#/projects/${p.id}">完整旁白与画面 ${arrow}</a></aside></article>`).join('')}</div>${curve()}<div class="journey-bottom"><span>ONE PROJECT. ONE CHAPTER AT A TIME.</span><span>沿着曲线，向前探索。</span></div></div></section>`;}
+import { projects } from '../data/projects.js';
+import { sectionLabel, arrow } from './shared.js';
+import { CodeBackdrop } from './CodeBackdrop.js';
+
+export function projectArtwork(project) {
+  const image = project.images[0];
+  return `<img class="detail-cover" src="${image.src}" width="${image.width}" height="${image.height}" alt="${image.alt}">`;
+}
+
+function sideTimeline() {
+  return `<aside class="project-navigator" tabindex="0" role="slider" aria-label="Project gallery timeline" aria-describedby="timeline-hint" aria-orientation="vertical" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Frame 1 of 4">
+    <div class="timeline-start"><span>STARTED</span><span class="timeline-origin">2026.07.21</span></div>
+    <svg viewBox="0 0 120 460" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="journey-light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#78b7ff" stop-opacity=".12"/><stop offset=".5" stop-color="#b5d5fa" stop-opacity=".7"/><stop offset="1" stop-color="#78b7ff" stop-opacity=".12"/></linearGradient></defs>
+      ${['curve-shadow', 'curve-main', 'curve-running'].map(name => `<path class="${name}" d="M42 -10 C-30 70 139 115 65 210 S-16 350 54 470"/>`).join('')}
+      <path class="curve-branch" d="M42 18 Q65 30 100 30 M60 414 Q85 428 110 428"/>
+      <circle class="curve-node" cx="42" cy="18" r="3"/><circle class="curve-node" cx="60" cy="414" r="3"/><circle class="curve-traveler" r="4"/>
+    </svg>
+    <span class="timeline-now">PRESENT</span>
+    <span id="timeline-hint" class="timeline-hint"><span class="timeline-hint-icon">↕</span>Hover & scroll<span>to explore frames</span></span>
+  </aside>`;
+}
+
+export function Projects() {
+  return `<section id="projects" class="section project-showcase container" aria-labelledby="projects-title">
+    ${sectionLabel('03', 'SELECTED WORK')}
+    <div class="showcase-heading"><h2 id="projects-title">Selected <span class="soft-text">work.</span></h2><span class="project-count">01 / ${String(projects.length).padStart(2, '0')}</span></div>
+    <div class="project-picker" role="group" aria-label="Choose a project">${projects.map((project, index) => `<button data-select-project="${index}" aria-pressed="${index === 0}"><span>${project.number}</span>${project.englishTitle}<i></i></button>`).join('')}</div>
+    <div class="showcase-layout">${sideTimeline()}<div class="project-viewer">
+    ${projects.map((project, number) => `<article class="showcase-project${number === 0 ? ' is-current' : ''}${project.codeBackdrop ? ' minecraft-project' : ''}" data-project="${number}" ${number ? 'inert aria-hidden="true"' : ''}>
+      ${project.codeBackdrop ? CodeBackdrop() : ''}
+      <div class="project-visual"><div class="project-gallery" aria-label="${project.englishTitle} gallery">
+        ${project.images.map((image, index) => `<img class="gallery-frame" src="${image.src}" width="${image.width}" height="${image.height}" alt="${image.alt}" loading="lazy" data-frame="${index}" style="opacity:${index === 0 ? 1 : 0}" ${index ? 'aria-hidden="true"' : ''}>`).join('')}
+        <button class="expand-gallery" aria-label="Expand current image">${arrow}<span>EXPAND</span></button>
+        <div class="gallery-caption"><span class="gallery-caption-title">${project.images[0].caption}</span><span class="gallery-scene"><b>01</b> / ${String(project.images.length).padStart(2, '0')}</span></div>
+      </div><div class="gallery-controls" aria-label="Choose a project image">
+        ${project.images.map((image, index) => `<button data-gallery-index="${index}" aria-label="View image ${index + 1}: ${image.caption}" aria-pressed="${index === 0}"><span>0${index + 1}</span><i></i></button>`).join('')}
+        <div class="gallery-arrows"><button class="gallery-prev" aria-label="Previous image">←</button><button class="gallery-next" aria-label="Next image">→</button></div>
+      </div></div>
+      <aside class="project-narration"><span class="project-category">${project.category}</span><h3>${project.englishTitle}</h3>
+        <div class="project-facts"><span>${project.engine}</span><span class="project-status"><i></i>${project.status}</span></div>${project.startDate ? `<time datetime="${project.startDate}">${project.dateLabel}</time>` : `<div class="project-client-names">${project.dateLabel}</div>`}
+        <div class="narration-rule"><span>ABOUT THE PROJECT</span><i></i></div><p lang="zh-CN">${project.description}</p>
+        <a class="project-story-link project-link" href="#/projects/${project.id}">Explore the project ${arrow}</a>
+      </aside>
+    </article>`).join('')}
+    </div></div>
+  </section>`;
+}

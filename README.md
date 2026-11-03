@@ -1,6 +1,6 @@
 # Beyond the Horizon
 
-L0r3Seeker 的个人数字宇宙。当前版本包含六个区域、A/B 全局地球背景与《变量（Variable）》项目旅程。
+L0r3Seeker 的个人作品网站。当前包含六个区域，以及 Variable 和 Minecraft 两项作品。
 
 ## 运行
 
@@ -11,30 +11,36 @@ npm run dev
 npm run check
 ```
 
-预览：http://127.0.0.1:4173 。发布目录 `dist/`，Site 标识保留在 `.openai/hosting.json`。
+预览地址：http://127.0.0.1:4173 。静态发布目录 `dist/`，Site 标识保留在 `.openai/hosting.json`。
 
-## 内容与结构
+## 页面与交互
 
-- `dist/data/projects.js`：《变量》的原文旁白、2026.07.21 至今的开发时间、四张用户提供的原型截图。增加项目即可扩展单项目旅程；没有虚构开发里程碑。
-- `dist/components/Projects.js`：每个视口聚焦一个项目，截图为主、旁白为辅；下方是带分支与时间戳的横向曲线。
-- `dist/animations/projectJourney.js`：原生滚动进度推动曲线与画面，支持截图按钮、触屏与减少动态效果，不接管滚轮。
-- `dist/components/ProjectDetail.js`：`#/projects/variable` 与 `#/projects/variable/image/1` 等刷新安全路由；大图查看支持前后切换、方向键、Esc 与焦点恢复。
-- `dist/components/GlobalUniverse.js`：A 真实纹理地球、B COBE 点阵地球；按需加载并保存选择。动画暂停、页面隐藏暂停、像素密度限制与静态背景备用。
-- `dist/animations/motionMath.js`：纯函数管理平滑与幅度边界；页尾使用独立的固定构图地平线，位移限制在 0 到 -8px，不放大完整球体。
-- `dist/data/siteConfig.js`：站点资料与社交链接。YouTube 暂时跳转官网，X / GitHub / Email 使用用户提供的地址。介绍、能力等未提供的个人资料仍明确标为占位。
-- `dist/styles/globals.css`：基础设计系统；`universe-journey.css`：全局背景与本轮项目旅程样式。
+- 首页使用用户提供的地球地平线照片；滚动时平滑淡入 COBE 点阵地球。无需选择方案，界面只有动画暂停按钮。页尾回到同一地平线，位移限制在 0 到 -8px。
+- 作品区保持正常文档流，没有固定视口或强制阅读距离。Variable / Minecraft 按钮直接切换作品，每次展示一个项目。
+- 桌面侧边曲线仅在悬停时接收滚轮，以平滑切换当前项目截图；首尾自动放行页面滚动。其他区域始终正常滚动。支持键盘方向键和显式截图按钮，手机使用按钮浏览。
+- Variable 保留用户提供的中文原文、2026.07.21 至今的开发时间和四张原型截图。
+- Minecraft 展示 MythosClient 与 SoreinClient 以及两张用户截图；未推测截图与客户端的逐一对应关系，也未编造开发日期。
+- Minecraft 背景包含原创的 AutoCrystal.java 展示片段、语法高亮、文件树、标签和状态栏。它是页面装饰，不执行，也不是从真实项目导出的源码。
+- 大图详情支持前后切换、方向键、Esc 和焦点恢复。路由如 `#/projects/minecraft/image/2` 可以直接访问和刷新。
+- UI 采用英文，介绍正文保留中文。审核、占位和临时方案文案已移除。
+- YouTube 暂时跳转官网，X / GitHub / Email 使用用户提供的地址。
 
-手机保持画面完整。窄屏旁白限制显示行数，短屏优先展示图片与曲线，完整原文可从“完整旁白与画面”打开。
+## 文件
 
-## 检查
+- `dist/data/projects.js`：作品与截图数据。
+- `dist/components/Projects.js`、`CodeBackdrop.js`：作品布局和代码背景。
+- `dist/animations/projectJourney.js`：项目选择、局部滚轮、截图过渡。
+- `dist/components/GlobalUniverse.js`：照片到数字地球的全局场景。
+- `dist/animations/motionMath.js`：渐变、阻尼和运动幅度边界。
+- `dist/styles/globals.css`：基础样式；`universe-journey.css`：当前场景和作品样式。
 
-`npm run check` 检查脚本语法、相对导入、资源、项目数据与 hosting manifest，并模拟突然跳转、确认地平线范围、无过冲和画廊边界。浏览器检查不等同于真实移动设备性能测试。
+页面支持减少动态效果、隐藏标签页暂停和像素密度限制。历史 Three.js 文件和旧纹理保留在源码中，当前页面不加载它们。
 
-## 资源与许可
+## 检查与资源
 
-- 项目截图：用户提供的四张《变量》Godot 原型截图，仅编码为 WebP，保留原始构图。
-- 地平线摄影：NASA / ISS064-E-005209。https://www.nasa.gov/image-article/earths-limb-or-horizon/
-- A：Three.js 0.187.0（MIT）。原 npm 包使用官方完整性校验值校验；生成的预压缩 ES module 保存为 `dist/assets/vendor/three/three.bundle.js`，LICENSE 随附。https://github.com/mrdoob/three.js
-- 地球参考纹理：Three.js 官方 `examples/textures/planets/earth_atmos_2048.jpg`；夜景纹理来自 three-globe 官方 `example/img/earth-night.jpg`。光照是艺术化渲染，不是实时天文模拟。
-- B：COBE 2.0.1（MIT），模块与 LICENSE 随附。https://github.com/shuding/cobe
+`npm run check` 检查模块语法、导入、资源、项目数据、英文 UI、审核文案清理、hosting manifest，以及地平线运动边界和曲线首尾放行。桌面与手机尺寸浏览器检查不等同于真实移动设备性能测试。
+
+- 地平线照片及六张项目截图：用户提供，转换 WebP，保留构图。
+- COBE 2.0.1（MIT），模块与 LICENSE 随附：https://github.com/shuding/cobe
+- 历史 Three.js 资源（MIT），许可随附；当前不加载。
 - Manrope：SIL Open Font License 1.1，附于 `dist/assets/fonts/OFL.txt`。
