@@ -29,15 +29,17 @@ npm run check
 
 源码仓库：https://github.com/L0r3Seeker/l0r3seeker
 
-当前 GitHub Pages 已发布：https://test1.ccwu.cc/l0r3seeker/ 。该地址继承自账号主页仓库已有的 `test1.ccwu.cc` CNAME，本项目没有改动账号主页或其他仓库。项目已启用 HTTPS。GitHub 默认地址会跳转到此地址。
+正式域名：https://l0r3seeker.vip/ 。GitHub Pages 为本仓库单独绑定此域名，发布根目录带有 CNAME。之前继承账号旧域名的配置已纠正，不改动账号主页仓库。
 
-发布分支为 `gh-pages`，源码在 `main`。下面的命令将 `dist` 复制到忽略的 `_site/`，只在复制品中添加仓库路径，保留 localhost 与未来独立域名的根路径兼容性：
+发布分支为 `gh-pages`，源码在 `main`。默认构建面向独立域名根路径：
 
 ```sh
-node scripts/prepare-pages.mjs /l0r3seeker/ https://l0r3seeker.github.io/l0r3seeker/
+npm run build:pages
 ```
 
-将生成目录作为 `gh-pages` 分支根目录发布，Pages 设置选择该分支 `/`。自定义域名 l0r3seeker.vip 的 DNS 尚待切换；域名生效时使用 `/` 和 `https://l0r3seeker.vip/` 重新准备发布目录，再设置 CNAME。当前保留 GitHub 默认地址，避免跳转到尚未切换的停放域名。
+脚本将 `dist` 复制到忽略的 `_site/`，资源使用根路径 `/assets/`，Open Graph 地址为正式域名。将生成内容提交到 `gh-pages` 分支根目录，保留 CNAME 文件。不要再使用 `/l0r3seeker/` 作为本网站的发布前缀。
+
+域名可访问还需要 DNS 指向 GitHub Pages，并等待 HTTPS 证书就绪。DNS 生效状态属于外部配置，不能以构建成功代替确认。
 
 历史 Sites 身份保留在 `.openai/hosting.json`；当前 GitHub 发布不改变旧 chatgpt.site 的托管状态。
 
