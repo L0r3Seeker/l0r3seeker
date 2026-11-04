@@ -1,0 +1,32 @@
+{
+  "packs": [
+    "simple-icons 16.36.0 (CC0)",
+    "@lobehub/icons-static-svg 1.102.0 (MIT)",
+    "@ant-design/icons-svg 4.6.0 (MIT)"
+  ],
+  "downloads": [
+    {
+      "asset": "clashverge.png",
+      "url": "https://raw.githubusercontent.com/clash-verge-rev/clash-verge-rev/main/src-tauri/icons/icon.png"
+    },
+    {
+      "asset": "wukong.webp",
+      "url": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2358720/library_600x900_2x.jpg",
+      "store": "https://store.steampowered.com/app/2358720/"
+    },
+    {
+      "asset": "gta-v.webp",
+      "url": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/271590/library_600x900_2x.jpg",
+      "store": "https://store.steampowered.com/app/271590/"
+    },
+    {
+      "asset": "forza-horizon-5.webp",
+      "url": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1551360/library_600x900_2x.jpg",
+      "store": "https://store.steampowered.com/app/1551360/"
+    },
+    {
+      "asset": "dingtalk.svg",
+      "source": "https://www.npmjs.com/package/@ant-design/icons-svg/v/4.6.0"
+    }
+  ]
+}
