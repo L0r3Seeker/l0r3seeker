@@ -15,6 +15,7 @@ import { GlobalUniverse, mountGlobalUniverse } from './components/GlobalUniverse
 import { mountProjectJourney } from './animations/projectJourney.js';
 import {mountQuotes} from './components/QuoteBar.js';
 import { localize,t } from './i18n.js';
+history.scrollRestoration='manual';
 if(location.hash==='#/orbit')history.replaceState(null,'','#horizon');
 let cleanup=[];
 function render(){
@@ -28,6 +29,9 @@ render();
 const copy=async event=>{const button=event.target.closest('[data-copy-server]');if(!button)return;const label=button.querySelector('span');try{await navigator.clipboard.writeText(button.dataset.copyServer);label.textContent=t('Copied');}catch{label.textContent=t('Copy unavailable');}setTimeout(()=>{if(label.isConnected)label.textContent=t('Copy IP ↗');},2000);};
 document.addEventListener('click',copy);window.addEventListener('languagechange',render);
 if(location.hash==='#works')history.replaceState(null,'','#projects');
-if(location.hash&&!location.hash.startsWith('#/'))requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior:'instant'}));
+requestAnimationFrame(()=>{
+  if(!location.hash||location.hash==='#horizon')window.scrollTo({top:0,behavior:'instant'});
+  else if(!location.hash.startsWith('#/'))document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior:'instant'});
+});
 window.addEventListener('pagehide',()=>{cleanup.forEach(fn=>fn());document.removeEventListener('click',copy);window.removeEventListener('languagechange',render);},{once:true});
 window.addEventListener('pageshow',e=>{if(e.persisted)location.reload();});
