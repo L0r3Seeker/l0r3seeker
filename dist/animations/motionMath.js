@@ -33,3 +33,8 @@ export function timelineWheel(current, delta, deltaMode = 0) {
   const next = clamp(current + clamp(pixels / 850, -.18, .18));
   return { next, consume: Math.abs(next - current) > .00001 };
 }
+
+// Each project occupies one short segment; image details never extend the journey.
+export function projectIndex(progress, count) {
+  return Math.min(Math.max(Math.round(clamp(progress) * Math.max(count - 1, 0)), 0), Math.max(count - 1, 0));
+}

@@ -6,20 +6,26 @@ import { Exploration } from './components/Exploration.js';
 import { Capabilities } from './components/Capabilities.js';
 import { Contact } from './components/Contact.js';
 import { Footer } from './components/Footer.js';
+import { Orbit,mountOrbit } from './components/Orbit.js';
 import { mountProjectRoutes } from './components/ProjectDetail.js';
 import { heroTransition } from './animations/heroTransition.js';
 import { scrollReveal, sectionTracking } from './animations/scrollReveal.js';
 import { microInteractions } from './animations/parallax.js';
 import { GlobalUniverse, mountGlobalUniverse } from './components/GlobalUniverse.js';
 import { mountProjectJourney } from './animations/projectJourney.js';
-
-document.querySelector('#app').innerHTML = `${GlobalUniverse()}${Navbar()}<main>${HeroEarth()}${Introduction()}${Projects()}${Exploration()}${Capabilities()}${Contact()}</main>${Footer()}`;
-document.querySelector('.back-top').addEventListener('click',()=>{history.replaceState(null,'',location.pathname);window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
-document.querySelectorAll('img').forEach(img => img.addEventListener('error',()=>{img.style.visibility='hidden';}));
-const cleanup = [mountNavbar(),heroTransition(),scrollReveal(),sectionTracking(),microInteractions(),mountProjectRoutes(),mountProjectJourney(),mountGlobalUniverse()];
-// Normal anchors remain native, including keyboard and browser history behavior.
+import { localize,t } from './i18n.js';
+let cleanup=[];
+function render(){
+  const y=scrollY;cleanup.forEach(fn=>fn());document.body.classList.remove('orbit-active','dialog-open');
+  document.querySelector('#app').innerHTML=`${GlobalUniverse()}${Navbar()}<main id="home-view">${HeroEarth()}${Introduction()}${Projects()}${Exploration()}${Capabilities()}${Contact()}</main>${Orbit()}${Footer()}`;
+  document.querySelector('.back-top').addEventListener('click',()=>{location.hash='horizon';window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
+  cleanup=[mountNavbar(),heroTransition(),scrollReveal(),sectionTracking(),microInteractions(),mountProjectRoutes(),mountProjectJourney(),mountGlobalUniverse(),mountOrbit()];
+  window.scrollTo({top:location.hash==='#/orbit'?0:y,behavior:'instant'});document.querySelector('.skip-link').textContent=t('Skip to content');localize(document.querySelector('#app'));
+}
+render();
+const copy=async event=>{const button=event.target.closest('[data-copy-server]');if(!button)return;const label=button.querySelector('span');try{await navigator.clipboard.writeText(button.dataset.copyServer);label.textContent=t('Copied');}catch{label.textContent=t('Copy unavailable');}setTimeout(()=>{if(label.isConnected)label.textContent=t('Copy IP ↗');},2000);};
+document.addEventListener('click',copy);window.addEventListener('languagechange',render);
 if(location.hash==='#works')history.replaceState(null,'','#projects');
-if(location.hash && !location.hash.startsWith('#/')) requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior:'instant'}));
-window.addEventListener('pagehide',()=>cleanup.forEach(dispose=>dispose()),{once:true});
-// Reinitialize after the browser restores a page from its back/forward cache.
-window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
+if(location.hash&&!location.hash.startsWith('#/'))requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView({behavior:'instant'}));
+window.addEventListener('pagehide',()=>{cleanup.forEach(fn=>fn());document.removeEventListener('click',copy);window.removeEventListener('languagechange',render);},{once:true});
+window.addEventListener('pageshow',e=>{if(e.persisted)location.reload();});

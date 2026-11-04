@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {universeState,damp,journeyState,timelineWheel} from '../dist/animations/motionMath.js';
+import {universeState,damp,journeyState,timelineWheel,projectIndex} from '../dist/animations/motionMath.js';
 import {projects} from '../dist/data/projects.js';
 const first=universeState(0,1000,5000),digital=universeState(900,1000,5000),end=universeState(6000,1000,5000);
 assert.equal(first.photoOpacity,1);assert.equal(first.digitalOpacity,0);
@@ -13,5 +13,7 @@ assert.equal(timelineWheel(.5,120).consume,true);assert(timelineWheel(.5,120).ne
 assert.equal(timelineWheel(0,-5,1).consume,false);assert(timelineWheel(.5,2,1).next>.5);
 assert(timelineWheel(.5,1,2).next<=.68);
 for(const p of [-100,0,.2,.5,.8,1,100]){const state=journeyState(p,projects);assert(state.project>=0&&state.project<projects.length);assert(state.frame>=0&&state.frame<=projects[state.project].images.length-1);}
-const sample=[projects[0],{...projects[0],id:'future'}];assert.equal(journeyState(.75,sample).project,1);assert.equal(journeyState(1,sample).frame,3);
+const sample=[projects[0],{...projects[0],id:'future'}];assert.equal(journeyState(.75,sample).project,1);assert.equal(journeyState(1,sample).frame,sample[1].images.length-1);
 console.log('PASS: photo-to-digital transition, bounded motion, timeline edge release and gallery boundaries.');
+
+assert.equal(projectIndex(0,3),0);assert.equal(projectIndex(.5,3),1);assert.equal(projectIndex(1,3),2);assert.equal(projectIndex(.24,3),0);assert.equal(projectIndex(.26,3),1);assert.equal(projectIndex(.74,3),1);assert.equal(projectIndex(.76,3),2);console.log('PASS: three separate project stops; no image sequence in overview.');

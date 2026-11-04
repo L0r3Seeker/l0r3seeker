@@ -9,11 +9,12 @@ export const siteConfig = {
     { label: 'About', id: 'about' },
     { label: 'Projects', id: 'projects' },
     { label: 'Exploration', id: 'exploration' },
+    { label: 'Orbit', href: '#/orbit' },
     { label: 'Contact', id: 'contact' },
   ],
   introduction: {
     headline: 'A space for ideas.\nA world in the making.',
-    note: '这里是 L0r3Seeker 的数字空间，记录作品、实验与持续探索。目前正在开发《变量（Variable）》——一款基于 Godot 4 的第一人称科幻物理解谜游戏，围绕重力与物理规则展开。',
+    note: 'This is L0r3Seeker’s digital space: a place for projects, experiments, and ongoing exploration. I am currently developing Variable, a first-person science-fiction physics puzzle game in Godot 4, built around gravity and the rules of physics.',
     roles: ['Godot 4', 'Physics-driven puzzles', 'Prototype development'],
   },
   capabilities: ['Godot 4', 'Physics & Gravity', 'First-person Interaction', 'Industrial Worldbuilding', 'Prototyping & Iteration'],

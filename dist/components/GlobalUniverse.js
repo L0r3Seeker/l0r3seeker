@@ -1,4 +1,5 @@
 import { clamp, damp, universeState } from '../animations/motionMath.js';
+import { t } from '../i18n.js';
 
 export function GlobalUniverse() {
   return `<div class="global-universe" aria-hidden="true">
@@ -38,6 +39,7 @@ export function mountGlobalUniverse() {
 
   function updateTarget() {
     target = universeState(scrollY, height, contactTop);
+    if(document.body.classList.contains('orbit-active')) target={...target,photoOpacity:0,digitalOpacity:.12,horizonOpacity:0,photoOffset:0,horizonOffset:0};
     if (reduced.matches) {
       const early = scrollY < height * .7;
       target.photoOpacity = early ? 1 : 0;
@@ -108,8 +110,8 @@ export function mountGlobalUniverse() {
 
   function syncPause() {
     pause.setAttribute('aria-pressed', String(paused));
-    pause.setAttribute('aria-label', paused ? 'Resume motion' : 'Pause motion');
-    pause.title = paused ? 'Resume motion' : 'Pause motion';
+    pause.setAttribute('aria-label', t(paused ? 'Resume motion' : 'Pause motion'));
+    pause.title = t(paused ? 'Resume motion' : 'Pause motion');
     pause.innerHTML = `<span aria-hidden="true">${paused ? '▷' : 'Ⅱ'}</span>`;
     request();
   }
@@ -130,6 +132,7 @@ export function mountGlobalUniverse() {
   pause.addEventListener('click', toggle);
   window.addEventListener('pointermove', pointer, { passive: true });
   window.addEventListener('scroll', updateTarget, { passive: true });
+  window.addEventListener('viewchange', measure);
   window.addEventListener('resize', measure);
   document.addEventListener('visibilitychange', visibility);
   reduced.addEventListener('change', preference);
@@ -140,6 +143,7 @@ export function mountGlobalUniverse() {
     pause.removeEventListener('click', toggle);
     window.removeEventListener('pointermove', pointer); window.removeEventListener('scroll', updateTarget);
     window.removeEventListener('resize', measure); document.removeEventListener('visibilitychange', visibility);
+    window.removeEventListener('viewchange', measure);
     reduced.removeEventListener('change', preference);
   };
 }
