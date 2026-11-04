@@ -14,28 +14,28 @@ export const projects = [
     "description": "Variable is a first-person science-fiction physics puzzle game built with Godot 4. Trapped in a facility they helped design, players use terminals to change the strength and direction of gravity, explore the environment, solve puzzles, and find a way out. Inspired by early Source engine games, its visual style combines low-poly geometry, coarse textures, and subdued industrial spaces. The project is in prototype development, with core mechanics and levels being refined.",
     "images": [
       {
-        "src": "/l0r3seeker/assets/images/variable/variable-1.webp",
+        "src": "/assets/images/variable/variable-1.webp",
         "width": 1270,
         "height": 709,
         "alt": "An industrial chamber with blue floor guidance in Variable",
         "caption": "The facility"
       },
       {
-        "src": "/l0r3seeker/assets/images/variable/variable-2.webp",
+        "src": "/assets/images/variable/variable-2.webp",
         "width": 1272,
         "height": 713,
         "alt": "Separated platforms and an industrial door in Variable",
         "caption": "Physics chamber"
       },
       {
-        "src": "/l0r3seeker/assets/images/variable/variable-3.webp",
+        "src": "/assets/images/variable/variable-3.webp",
         "width": 1266,
         "height": 713,
         "alt": "The gravity terminal with direction controls in Variable",
         "caption": "Gravity terminal"
       },
       {
-        "src": "/l0r3seeker/assets/images/variable/variable-4.webp",
+        "src": "/assets/images/variable/variable-4.webp",
         "width": 1269,
         "height": 712,
         "alt": "The observation room and physics protocol interface in Variable",
@@ -60,14 +60,14 @@ export const projects = [
     "description": "MythosClient and SoreinClient are Minecraft client development projects. From module organization to interface interaction, they explore the balance between functionality and visual expression.",
     "images": [
       {
-        "src": "/l0r3seeker/assets/images/minecraft/client-1.webp",
+        "src": "/assets/images/minecraft/client-1.webp",
         "width": 1920,
         "height": 1057,
         "alt": "A Minecraft client interface with seven module categories and a violet gradient",
         "caption": "Client interface / 01"
       },
       {
-        "src": "/l0r3seeker/assets/images/minecraft/client-2.webp",
+        "src": "/assets/images/minecraft/client-2.webp",
         "width": 1920,
         "height": 1057,
         "alt": "A Minecraft client interface with a rounded navigation bar and violet module panels",
@@ -90,7 +90,7 @@ export const projects = [
     "description": "Earthol.vip is a personal achievement atlas that turns everyday experiences into a browsable collection. The website combines an achievement catalogue and progress overview with open-source and technical-services pages. A quiet space to record experiences, at your own pace.",
     "images": [
       {
-        "src": "/l0r3seeker/assets/images/earthol/earthol-home.webp",
+        "src": "/assets/images/earthol/earthol-home.webp",
         "width": 1265,
         "height": 712,
         "alt": "Earthol.vip achievement atlas homepage with a progress overview and collection",
@@ -114,35 +114,35 @@ export const projects = [
     "description": "MinecraftServer is a Minecraft server project started in February 2025. These snapshots document its landscapes, builds, redstone experiments, and time spent together in the world. Server address: mc.earthol.vip.",
     "images": [
       {
-        "src": "/l0r3seeker/assets/images/server/server-4.webp",
+        "src": "/assets/images/server/server-4.webp",
         "width": 1920,
         "height": 1057,
         "alt": "A monumental circular Minecraft build with tall white columns",
         "caption": "Architecture at scale"
       },
       {
-        "src": "/l0r3seeker/assets/images/server/server-1.webp",
+        "src": "/assets/images/server/server-1.webp",
         "width": 1920,
         "height": 1057,
         "alt": "A sunlit Minecraft forest and a server player list",
         "caption": "A shared world"
       },
       {
-        "src": "/l0r3seeker/assets/images/server/server-2.webp",
+        "src": "/assets/images/server/server-2.webp",
         "width": 1920,
         "height": 1057,
         "alt": "A Minecraft redstone structure in golden evening light",
         "caption": "Redstone experiments"
       },
       {
-        "src": "/l0r3seeker/assets/images/server/server-3.webp",
+        "src": "/assets/images/server/server-3.webp",
         "width": 1920,
         "height": 1057,
         "alt": "Players building together beside a wooden Minecraft house",
         "caption": "Building together"
       },
       {
-        "src": "/l0r3seeker/assets/images/server/server-5.webp",
+        "src": "/assets/images/server/server-5.webp",
         "width": 1920,
         "height": 1057,
         "alt": "A Minecraft landscape at sunset with redstone builds",

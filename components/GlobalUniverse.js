@@ -3,7 +3,7 @@ import { t } from '../i18n.js';
 
 export function GlobalUniverse() {
   return `<div class="global-universe" aria-hidden="true">
-    <div class="horizon-photo"><picture><source media="(max-width:700px)" srcset="/l0r3seeker/assets/images/horizon-sunrise-mobile.webp"><img src="/l0r3seeker/assets/images/horizon-sunrise.webp" width="2000" height="1000" fetchpriority="high" alt=""></picture><div class="photo-shade"></div></div>
+    <div class="horizon-photo"><picture><source media="(max-width:700px)" srcset="/assets/images/horizon-sunrise-mobile.webp"><img src="/assets/images/horizon-sunrise.webp" width="2000" height="1000" fetchpriority="high" alt=""></picture><div class="photo-shade"></div></div>
     <div class="digital-stars"></div><canvas class="dot-canvas"></canvas>
     <div class="universe-vignette"></div><div class="global-cursor-light"></div>
   </div><button class="universe-pause" aria-label="Pause motion" aria-pressed="false" title="Pause motion"><span aria-hidden="true">Ⅱ</span></button>`;
