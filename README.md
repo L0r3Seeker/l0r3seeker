@@ -29,6 +29,8 @@ npm run check
 
 源码仓库：https://github.com/L0r3Seeker/l0r3seeker
 
+当前 GitHub Pages 已发布：https://test1.ccwu.cc/l0r3seeker/ 。该地址继承自账号主页仓库已有的 `test1.ccwu.cc` CNAME，本项目没有改动账号主页或其他仓库。项目已启用 HTTPS。GitHub 默认地址会跳转到此地址。
+
 发布分支为 `gh-pages`，源码在 `main`。下面的命令将 `dist` 复制到忽略的 `_site/`，只在复制品中添加仓库路径，保留 localhost 与未来独立域名的根路径兼容性：
 
 ```sh
