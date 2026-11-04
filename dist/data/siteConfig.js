@@ -9,7 +9,8 @@ export const siteConfig = {
     { label: 'About', id: 'about' },
     { label: 'Projects', id: 'projects' },
     { label: 'Exploration', id: 'exploration' },
-    { label: 'Orbit', href: '#/orbit' },
+    { label: 'Services', id: 'capabilities' },
+    { label: 'Orbit', id: 'orbit' },
     { label: 'Contact', id: 'contact' },
   ],
   introduction: {
@@ -24,5 +25,5 @@ export const siteConfig = {
     {label:'GitHub',href:'https://github.com/L0r3Seeker',note:'L0r3Seeker on GitHub'},
     {label:'Email',href:'mailto:L0r3Seekerx@gmail.com',note:'Email L0r3Seeker'},
   ],
-  sections: ['horizon', 'about', 'projects', 'exploration', 'capabilities', 'contact'],
+  sections: ['horizon', 'about', 'projects', 'exploration', 'capabilities', 'orbit', 'contact'],
 };

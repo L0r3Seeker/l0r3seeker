@@ -1,10 +1,15 @@
-import { siteConfig } from '../data/siteConfig.js';
-import { sectionLabel } from './shared.js';
-const icons = [
-  '<path d="m9 7-5 5 5 5m6-10 5 5-5 5M13 4l-2 16"/>',
-  '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7 9 3 3-3 3m6 0h4"/>',
-  '<path d="M5 3v18m-2-4h18M9 3v10h12M17 3v18"/>',
-  '<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/>',
-  '<rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M6 7h1m-1 10h1m5-10h6m-6 10h6"/>',
+import {sectionLabel,arrow} from './shared.js';
+const services=[
+  {title:'Websites & interfaces',tag:'WEB / UI / MOTION',description:'Portfolios, landing pages, and useful web interfaces. Responsive layouts with motion that serves the content.',icon:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/>'},
+  {title:'Game prototypes',tag:'GODOT / PHYSICS / INTERACTION',description:'From a mechanic to a playable prototype. First-person interaction, physics puzzles, and iterative level development.',icon:'<path d="M7 8h10l4 9-2 3-5-4h-4l-5 4-2-3 4-9Z"/><path d="M7 11v5m-2-2.5h4m6-1h.1m2 2h.1"/>'},
+  {title:'Minecraft development',tag:'JAVA / CLIENTS / SERVERS',description:'Client modules, game interfaces, and server-related tooling. Built around a clear feature and a practical workflow.',icon:'<path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9"/>'},
+  {title:'Tools & automation',tag:'SCRIPTS / INTEGRATIONS / WORKFLOWS',description:'Small tools that remove repetitive steps. Focused scripts and integrations shaped around the problem you need to solve.',icon:'<path d="m8 6-5 6 5 6m8-12 5 6-5 6M14 4l-4 16"/>'},
 ];
-export function Capabilities() { return `<section id="capabilities" class="section capabilities container" aria-labelledby="capabilities-title">${sectionLabel('05','TOOLS & FOCUS')}<div class="section-heading reveal"><h2 id="capabilities-title">Ways to <span class="soft-text">create.</span></h2><div class="heading-aside"><p>From an idea to something you can explore.</p></div></div><div class="capability-list">${siteConfig.capabilities.map((c,i)=>`<div class="capability-row reveal"><span class="capability-number">0${i+1}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">${icons[i]}</svg><h3>${c}</h3><span class="capability-end">+</span></div>`).join('')}</div></section>`; }
+export function Capabilities(){
+  return `<section id="capabilities" class="section capabilities conviction container" aria-labelledby="capabilities-title">${sectionLabel('05','BEYOND THE FRAME')}
+    <div class="conviction-manifesto"><h2 id="capabilities-title" class="reveal">Don't let the walls<br><span>become your horizon.</span></h2><div class="conviction-note reveal"><span class="eyebrow">THINK BEYOND THE GIVEN</span><p>Some places teach you to fit the frame. We would rather build a wider one.</p><span>Curiosity needs room. Good work travels.</span></div></div>
+    <div class="services-heading reveal"><div><span class="eyebrow">TURN ABILITY INTO SOMETHING REAL</span><h3>Technical services.</h3></div><span>From a rough idea to something that works.</span></div>
+    <div class="services-grid">${services.map((s,i)=>`<a class="service-card reveal" href="mailto:L0r3Seekerx@gmail.com?subject=${encodeURIComponent('Project enquiry: '+s.title)}"><div class="service-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">${s.icon}</svg><span>0${i+1}</span></div><span class="service-tag">${s.tag}</span><h4>${s.title}</h4><p>${s.description}</p><span class="service-discuss"><span>Discuss a project</span>${arrow}</span></a>`).join('')}</div>
+    <div class="services-footnote"><span>Scope first. Build carefully. Ship clearly.</span><a href="#contact">Let's talk ${arrow}</a></div>
+  </section>`;
+}

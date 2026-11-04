@@ -39,7 +39,6 @@ export function mountGlobalUniverse() {
 
   function updateTarget() {
     target = universeState(scrollY, height, contactTop);
-    if(document.body.classList.contains('orbit-active')) target={...target,photoOpacity:0,digitalOpacity:.12,horizonOpacity:0,photoOffset:0,horizonOffset:0};
     if (reduced.matches) {
       const early = scrollY < height * .7;
       target.photoOpacity = early ? 1 : 0;

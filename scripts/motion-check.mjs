@@ -16,4 +16,6 @@ for(const p of [-100,0,.2,.5,.8,1,100]){const state=journeyState(p,projects);ass
 const sample=[projects[0],{...projects[0],id:'future'}];assert.equal(journeyState(.75,sample).project,1);assert.equal(journeyState(1,sample).frame,sample[1].images.length-1);
 console.log('PASS: photo-to-digital transition, bounded motion, timeline edge release and gallery boundaries.');
 
-assert.equal(projectIndex(0,3),0);assert.equal(projectIndex(.5,3),1);assert.equal(projectIndex(1,3),2);assert.equal(projectIndex(.24,3),0);assert.equal(projectIndex(.26,3),1);assert.equal(projectIndex(.74,3),1);assert.equal(projectIndex(.76,3),2);console.log('PASS: three separate project stops; no image sequence in overview.');
+assert.equal(projectIndex(0,4),0);assert.equal(projectIndex(1/3,4),1);assert.equal(projectIndex(2/3,4),2);assert.equal(projectIndex(1,4),3);
+for(const [p,i] of [[.16,0],[.17,1],[.49,1],[.51,2],[.83,2],[.84,3]])assert.equal(projectIndex(p,4),i);
+console.log('PASS: four separate project stops; no image sequence in overview.');

@@ -1,60 +1,54 @@
 # Beyond the Horizon
 
-L0r3Seeker 的个人作品网站。首页仍采用地平线照片，滚动后过渡到数字地球；页尾再次回到地平线。
+L0r3Seeker 的个人作品网站。地平线照片是首页封面，随滚动淡变到数字地球，结尾再次回到地平线。Daily Orbit 是同一页面内的第 06 区。
 
-## 运行
+## 运行与检查
 
-Node.js 20+，无需安装依赖或构建。
+Node.js 20+，无需安装依赖：
 
 ```sh
 npm run dev
 npm run check
 ```
 
-静态发布目录为 `dist/`；Site 身份保留在 `.openai/hosting.json`。
+静态源目录为 `dist/`。本地首页为 http://127.0.0.1:4173/ 。全站默认英文，Menu 可切换中文并保存本地偏好。旧的 `#/orbit` 启动链接回到地平线，正常 Orbit 导航使用 `#orbit`。
 
-## 当前界面
+## 当前内容
 
-- 首页：六个主要区域。作品区是一个固定视口的时间线，每张卡片只展示项目概览。
-- 项目按时间排列：MinecraftServer（2025.02 至今）、Minecraft / MythosClient 与 SoreinClient（2026.06.20 至今）、Variable（2026.07.21 至今）。
-- 桌面滚轮一次最多推进一个项目，950ms 的手势保护抑制连续惯性。停留期间可以点击详情，不会自动播放下一项目或依次播放截图。浏览到边界后可离开作品区。时间线按钮也可选择项目。
-- 项目主题依次使用服务器建筑摄影、IDEA 风格代码、工业解谜场景，采用淡变衔接。
-- 详情弹窗包含完整介绍、所有截图、缩略图选择、前后切换、方向键和 Esc。MinecraftServer 包含五张用户截图及 mc.earthol.vip 地址复制按钮。
-- `#/orbit` 是独立的 Daily Orbit 界面，不属于作品时间线。一个网格展示 19 个软件与平台图标，另一个区域展示三款游戏宣传图，两处均注明 and more。
-- 游戏账号为 L0r3Seeker；好友代码始终显示 Hidden，无代码值，无展开入口。
-- 全站默认英文。Menu 可切换简体中文，语言偏好仅保存在浏览器本地；个人介绍、项目介绍、按钮、详情与 Daily Orbit 均有中文内容。代码和品牌名保留原样。
-- 减少动态效果模式下取消固定滚动，改为正常展示全部项目，详情入口仍可使用。
+- 七个主要区域：地平线、介绍、作品、探索、视野与技术服务、日常轨道、联系。
+- 作品顺序：Variable、Client（MythosClient / SoreinClient）、Earthol.vip、MinecraftServer。
+- 日期分别保留为 2026.07.21 至今、2026.06.20 至今、网页项目标签、2025.02 至今。Earthol 未提供开发日期，不编造。
+- 桌面滚轮一次最多推进一个项目，950ms 手势保护抑制惯性连跳。每个项目停留展示概览与可点击的详情入口；概览不会依次播放截图。时间线按钮也可选择作品。到达边界后允许离开作品区。
+- 详情使用手动缩略图、前后切换、方向键与 Esc。服务器地址 mc.earthol.vip 可以复制；Earthol 有外部网页链接。
+- 第 05 区以围墙和地平线的隐喻表达能力不应受环境限制，下接网站、游戏原型、Minecraft 开发、工具自动化四类技术服务卡片；邮件入口使用用户提供的邮箱。
+- Daily Orbit 的软件网格展示 19 个应用图标，三款游戏同组分区展示官方宣传图、介绍和商店链接；两组都标明 and more。账号 L0r3Seeker，好友代码始终显示 Hidden，无代码值与展开入口。
+- 页底微型名言条收录六位现代人物的短句。每次点击刷新随机选择另一条，作者链接指向原始出处，中文为本站译文。没有自动刷新或外部 API 依赖。来源见 `docs/quote-sources.md`。
+- 系统减少动态效果模式下，作品改为普通文档流，全部详情入口仍可用。
 
-## 结构
+## GitHub Pages
 
-- `dist/data/projects.js`：三项作品、日期、IP 与十一张项目截图。
-- `dist/components/Projects.js`、`dist/animations/projectJourney.js`：时间线和按项目推进。
-- `dist/components/ProjectDetail.js`：详情与手动图片浏览。
-- `dist/data/orbit.js`、`dist/components/Orbit.js`：软件、游戏及独立视图导航。
-- `dist/i18n.js`：语言、文案与本地偏好。
-- `dist/components/CodeBackdrop.js`：原创装饰用 AutoCrystal.java 代码，不执行，也未声称来自真实源码。
-- `dist/styles/work-orbit.css`：当前作品和 Daily Orbit 布局。
+源码仓库：https://github.com/L0r3Seeker/l0r3seeker
 
-## 验证
+发布分支为 `gh-pages`，源码在 `main`。下面的命令将 `dist` 复制到忽略的 `_site/`，只在复制品中添加仓库路径，保留 localhost 与未来独立域名的根路径兼容性：
 
-`npm run check` 检查 JS 语法、导入、数据、静态资源、英文默认内容、三项目边界、运动限幅、语言映射和隐藏好友代码约束。
+```sh
+node scripts/prepare-pages.mjs /l0r3seeker/ https://l0r3seeker.github.io/l0r3seeker/
+```
 
-浏览器检查覆盖 1440×900、390×844 和 458×657，验证卡片与详情入口可见、快速滚轮不跳过多个项目、独立视图导航、Menu 双语切换、详情缩略图与图标/宣传图加载。未做真实手机硬件性能或 Minecraft 联机测试。页面没有显示虚构的服务器在线状态。
+将生成目录作为 `gh-pages` 分支根目录发布，Pages 设置选择该分支 `/`。自定义域名 l0r3seeker.vip 的 DNS 尚待切换；域名生效时使用 `/` 和 `https://l0r3seeker.vip/` 重新准备发布目录，再设置 CNAME。当前保留 GitHub 默认地址，避免跳转到尚未切换的停放域名。
 
-## 图像与图标来源
+历史 Sites 身份保留在 `.openai/hosting.json`；当前 GitHub 发布不改变旧 chatgpt.site 的托管状态。
 
-用户提供：地平线照片、四张 Variable 截图、两张客户端截图、五张服务器截图。
+## 验证与素材
 
-游戏宣传图来自 Steam 官方 CDN，对应商店：
+`npm run check` 覆盖 JS 语法、导入、四项目顺序与边界、七区结构、资源、运动限幅、英文默认内容、中英文映射、固定隐藏好友代码及名言随机算法。浏览器验证页面导航、详情、刷新和响应式布局；未进行真实手机硬件性能或 Minecraft 联机测试，没有虚构服务器在线状态。
+
+用户提供地平线照片、四张 Variable 截图、两张客户端截图、五张服务器截图。Earthol 封面从用户公开仓库 https://github.com/L0r3Seeker/Earth-online-site 当前源码本地渲染截取；访问 live domain 在本次环境超时，未据此断言网站线上故障。
+
+游戏图来自 Steam 官方 CDN：
+
 - https://store.steampowered.com/app/2358720/
 - https://store.steampowered.com/app/271590/
 - https://store.steampowered.com/app/1551360/
 
-图标：Simple Icons 16.36.0（CC0）、Lobe Icons 1.102.0（MIT）、Ant Design Icons 4.6.0（MIT），以及 Clash Verge Rev 官方项目图标。npm 下载包已按 registry 返回的 SHA-512 校验值验证，仅提取静态 SVG，不执行包代码。下载来源记录在 `dist/assets/icons/sources.json`。
-
-- https://github.com/simple-icons/simple-icons
-- https://github.com/lobehub/lobe-icons
-- https://github.com/ant-design/ant-design-icons
-- https://github.com/clash-verge-rev/clash-verge-rev
-
-COBE 2.0.1（MIT）和 Manrope（SIL OFL）许可随附。历史 Three.js 文件和旧纹理保留，当前页面不加载。
+图标为 Simple Icons 16.36.0（CC0）、Lobe Icons 1.102.0（MIT）、Ant Design Icons 4.6.0（MIT）及 Clash Verge Rev 官方图标，下载来源记录在 `dist/assets/icons/sources.json`，包已校验 SHA-512，仅提取静态 SVG。COBE 2.0.1（MIT）与 Manrope（SIL OFL）许可随附。装饰用 AutoCrystal.java 为原创展示代码，不执行，也未声称是真实客户端源码。历史 Three.js 和旧纹理保留但当前不加载。

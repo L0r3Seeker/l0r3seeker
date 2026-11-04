@@ -15,7 +15,7 @@ export function sectionTracking() {
     entries.forEach(entry => positions.set(entry.target.id,entry.isIntersecting));
     const active = [...positions].find(([,visible])=>visible)?.[0];
     links.forEach(link => {
-      if (link.dataset.nav === active || (active === 'capabilities' && link.dataset.nav === 'exploration')) link.setAttribute('aria-current','location');
+      if (link.dataset.nav === active) link.setAttribute('aria-current','location');
       else link.removeAttribute('aria-current');
     });
   }, {rootMargin:'-15% 0px -55% 0px',threshold:0});

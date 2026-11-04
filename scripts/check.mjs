@@ -7,16 +7,17 @@ let count=0;
 async function walk(path){for(const entry of await readdir(path,{withFileTypes:true})){const full=resolve(path,entry.name);if(entry.isDirectory())await walk(full);else if(entry.name.endsWith('.js')){execFileSync(process.execPath,['--check',full]);const text=await readFile(full,'utf8');for(const match of text.matchAll(/from\s+['"]([^'"]+)['"]/g)){if(match[1].startsWith('.'))assert((await stat(resolve(dirname(full),match[1]))).isFile(),`Missing import ${match[1]}`);}count++;}}}
 await walk(root);
 const {siteConfig}=await import('../dist/data/siteConfig.js');const {projects}=await import('../dist/data/projects.js');
-assert.equal(new Set(siteConfig.sections).size,6);assert.equal(projects.length,3);assert.equal(new Set(projects.map(p=>p.id)).size,projects.length);
+assert.equal(new Set(siteConfig.sections).size,7);assert.equal(projects.length,4);assert.deepEqual(projects.map(p=>p.id),['variable','minecraft','earthol','minecraft-server']);assert.equal(new Set(projects.map(p=>p.id)).size,projects.length);
 const variable=projects.find(p=>p.id==='variable'),minecraft=projects.find(p=>p.id==='minecraft'),server=projects.find(p=>p.id==='minecraft-server');
 assert.equal(variable.startDate,'2026-07-21');assert.equal(variable.images.length,4);
 assert.equal(minecraft.startDate,'2026-06-20');assert.equal(minecraft.images.length,2);assert(minecraft.codeBackdrop);
+assert.equal(minecraft.englishTitle,'Client');assert.equal(projects[2].website,'https://earthol.vip/');assert(!projects[2].startDate,'Do not invent the website date');
 assert.equal(server.startDate,'2025-02');assert.equal(server.serverAddress,'mc.earthol.vip');assert.equal(server.images.length,5);
 for(const project of projects)for(const image of project.images)assert((await stat(resolve(root,'.'+image.src))).size>0,`Missing project screenshot ${image.src}`);
 assert.equal(siteConfig.contact.length,4);assert.equal(siteConfig.contact.find(c=>c.label==='Email').href,'mailto:L0r3Seekerx@gmail.com');
-for(const asset of ['assets/images/horizon-sunrise.webp','assets/images/horizon-sunrise-mobile.webp','assets/fonts/manrope-latin.woff2','assets/favicon.svg','styles/globals.css','styles/universe-journey.css','styles/work-orbit.css'])assert((await stat(resolve(root,asset))).size>0,`Missing asset ${asset}`);
+for(const asset of ['assets/images/horizon-sunrise.webp','assets/images/horizon-sunrise-mobile.webp','assets/fonts/manrope-latin.woff2','assets/favicon.svg','styles/globals.css','styles/universe-journey.css','styles/work-orbit.css','styles/portfolio-update.css'])assert((await stat(resolve(root,asset))).size>0,`Missing asset ${asset}`);
 const hosting=JSON.parse(await readFile('.openai/hosting.json','utf8'));assert(hosting.project_id);assert.equal(hosting.static.directory,'dist');
-console.log(`PASS: ${count} JavaScript modules, imports, six sections, project route keys, assets, and hosting manifest.`);
+console.log(`PASS: ${count} JavaScript modules, imports, seven sections, four ordered projects, assets, and hosting manifest.`);
 await import('./motion-check.mjs');
 const componentNames=['Navbar','HeroEarth','Introduction','Projects','Exploration','Capabilities','Contact','Footer','GlobalUniverse','Orbit'];
 const rendered=[];
@@ -30,3 +31,10 @@ const {everydayApps,favoriteGames}=await import('../dist/data/orbit.js');assert.
 assert(!/data-(?:friend-code|reveal-code)/.test(rendered.join('')),'Friend code stays hidden');console.log('PASS: 19 app icons, three official game images, permanent friend-code privacy.');
 
 const i18n=await import('../dist/i18n.js');assert.equal(i18n.getLanguage(),'en');i18n.setLanguage('zh');assert.equal(i18n.t('Hidden'),'隐藏');assert.equal(i18n.t('and more.'),'等。');assert.match(i18n.t(variable.description),/^《变量/);i18n.setLanguage('en');assert.equal(i18n.t('Hidden'),'Hidden');console.log('PASS: English default, Chinese project text, and language switching.');
+
+assert(favoriteGames.every(g=>g.description.length>40),'Each game has a short introduction');const orbitMarkup=rendered[componentNames.indexOf('Orbit')];assert.equal((orbitMarkup.match(/class="game-panel"/g)||[]).length,3);console.log('PASS: three game background panels with individual introductions.');
+assert.match(orbitMarkup,/^<section id="orbit"/);assert(!orbitMarkup.includes('<main'));assert.equal(siteConfig.nav.find(n=>n.id==='orbit').href,undefined);assert(!/^<section[^>]*\shidden(?:\s|>)/.test(orbitMarkup));
+const {quotes,nextQuoteIndex}=await import('../dist/data/quotes.js');assert.equal(quotes.length,6);assert.equal(new Set(quotes.map(q=>q.id)).size,quotes.length);
+for(const q of quotes){assert(q.text&&q.zh&&q.authorZh);assert.equal(new URL(q.source).protocol,'https:');}
+for(let current=-1;current<quotes.length;current++)for(const value of [0,.1,.5,.99,1]){const next=nextQuoteIndex(current,quotes.length,()=>value);assert(next>=0&&next<quotes.length);assert.notEqual(next,current);}
+assert.equal(nextQuoteIndex(0,1),0);console.log('PASS: inline Orbit, sourced bilingual quotes, and refresh without immediate repetition.');
